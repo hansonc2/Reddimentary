@@ -1,6 +1,6 @@
-FROM python:3.6.8-alpine3.9
+FROM alpine:lastest
 
-LABEL MAINTAINER="FirstName LastName <example@domain.com>"
+LABEL MAINTAINER="Cole Hanson <colehanson42@carleton.edu>"
 
 ENV GROUP_ID=1000 \
     USER_ID=1000

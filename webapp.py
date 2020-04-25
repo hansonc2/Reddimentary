@@ -9,13 +9,21 @@
 '''
 #import dependencies
 import flask
-from flask import render_template, request
+from flask import Flask, jsonify, render_template, request
+from flask_pymongo import PyMongo
 import json
 import sys
 import datasource
 
 #creates a flask app
 app = flask.Flask(__name__)
+app.config["MONGO_URI"] = 'mongodb://' + os.environ['MONGODB_USERNAME'] + 
+                                    ':' + os.environ['MONGODB_PASSWORD'] + '@' + 
+                                    os.environ['MONGODB_HOSTNAME'] + ':27017/' +
+                                    os.environ['MONGODB_DATABASE']
+mongo = PyMongo(app)
+db = mongo.db
+
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 @app.route('/results', methods = ['GET', 'POST'])
@@ -220,7 +228,8 @@ def filterResults(comments, form):
 @app.route('/', methods = ['GET', 'POST'])
 def root():
     '''
-    Returns home.html or redirects user to /results based on HTTP request
+    Returns
+    home.html or redirects user to /results based on HTTP request
 
     Returns:
         -html page
@@ -258,10 +267,6 @@ def dataviz():
 
 
 if __name__ == '__main__':
-    if len(sys.argv) != 3:
-        print('Usage: {0} host port'.format(sys.argv[0]), file=sys.stderr)
-        exit()
-
-    host = sys.argv[1]
-    port = sys.argv[2]
-    app.run(host=host, port=port)
+    ENVIRONMENT_DEBUG = os.environ.get("APP_DEBUG", True)
+    ENVIRONMENT_PORT = os.environ.get("APP_PORT", 5000)
+    application.run(host='0.0.0.0', port=ENVIRONMENT_PORT, debug=ENVIRONMENT_DEBUG)
